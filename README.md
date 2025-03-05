@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# theAIDeveloper
 
-## Getting Started
+Learn how to create your own AI apps.
 
-First, run the development server:
+![Logo](https://d3erng0hrrd7m4.cloudfront.net/logo.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ChatGPT Clone using Next.js and TailwindCSS
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Description:**  
+This project is a ChatGPT clone built using **Next.js** and **TailwindCSS**. It features essential functionalities such as message handling, language model configuration, and an interactive user interface.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Structure:**
+- `src/app/api/chat`: API route for handling OpenAI requests.
+- `src/components/ui`: UI components like `ChatMessage`, `ConfigPanel`, `ModelSelector`, and `TemperatureSlider`.
+- `src/types`: Type definitions for better TypeScript support.
+- `src/utils`: Utility functions, including the API client.
+- `src/app/page.tsx`: Main application entry point.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Technology:**
+- Next.js
+- TypeScript
+- TailwindCSS
+- OpenAI API
+
+## Projects
+
+Explore various AI projects at [theAIDeveloper Projects](https://www.the-aideveloper.com/projects).
+
+## Guides
+
+For detailed guides and tutorials, visit [theAIDeveloper Guides](https://www.the-aideveloper.com/guides).
+
+## Author
+
+**Carlos Polanco**  
+AI developer and educator dedicated to helping others build AI-powered applications.
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+If you want to learn more, visit [theAIDeveloper.com](https://www.the-aideveloper.com).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Connect with Us
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [![YouTube](./social/youtube.png)](https://www.youtube.com/@theaideveloper) YouTube
+- [![Instagram](./social/instagram.png)](https://www.instagram.com/cptheaideveloper/) Instagram
+- [![Twitter](./social/x.png)](https://x.com/cpaideveloper) Twitter
+- [![TikTok](./social/tiktok.png)](https://www.tiktok.com/@codingnutella) TikTok
+- [![LinkedIn](./social/linkedin.png)](https://www.linkedin.com/company/theaidevelopercp/) LinkedIn
 
-## Deploy on Vercel
+## GitHub
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Visit our GitHub profile: [cpTheAideveloper](https://github.com/cpTheAideveloper)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Website
+
+Explore our website: [theAIDeveloper.com](https://www.the-aideveloper.com/)
+
+## License
+
+This project is **free** and licensed under the [MIT License](LICENSE).
+```
