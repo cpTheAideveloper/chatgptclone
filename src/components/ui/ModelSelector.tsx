@@ -1,4 +1,3 @@
-// src/components/ui/ModelSelector.tsx
 import React from "react";
 
 interface ModelSelectorProps {
@@ -6,7 +5,12 @@ interface ModelSelectorProps {
   onChange: (model: string) => void;
 }
 
-const models = ["gpt-3.5-turbo", "gpt-4"];
+const models = [
+  { name: "gpt-4o-mini", label: "GPT-4o Mini" },
+  { name: "gpt-4o", label: "GPT-4o" },
+  { name: "gpt-4", label: "GPT-4" },
+  { name: "gpt-3.5-turbo", label: "GPT-3.5 Turbo" },
+];
 
 export default function ModelSelector({
   selectedModel,
@@ -21,8 +25,8 @@ export default function ModelSelector({
         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
       >
         {models.map((model) => (
-          <option key={model} value={model}>
-            {model}
+          <option key={model.name} value={model.name}>
+            {model.label}
           </option>
         ))}
       </select>

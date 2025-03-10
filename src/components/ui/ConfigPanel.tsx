@@ -1,24 +1,23 @@
-// src/components/ui/ConfigPanel.tsx
 import React from "react";
 import ModelSelector from "./ModelSelector";
 import TemperatureSlider from "./TemperatureSlider";
 
 interface ConfigPanelProps {
-  model: string;
-  onModelChange: (model: string) => void;
+  selectedModel: string;
   temperature: number;
-  onTemperatureChange: (temp: number) => void;
+  onModelChange: (model: string) => void;
+  onTemperatureChange: (temperature: number) => void;
 }
-
 export default function ConfigPanel({
-  model,
-  onModelChange,
+  selectedModel,
   temperature,
+  onModelChange,
   onTemperatureChange,
 }: ConfigPanelProps) {
   return (
-    <div className="p-4 bg-white shadow rounded mb-4">
-      <ModelSelector selectedModel={model} onChange={onModelChange} />
+    <div className="w-full md:w-1/4 p-4 border-l border-gray-300">
+      <h2 className="text-lg font-semibold mb-4">Configuration</h2>
+      <ModelSelector selectedModel={selectedModel} onChange={onModelChange} />
       <TemperatureSlider
         temperature={temperature}
         onChange={onTemperatureChange}

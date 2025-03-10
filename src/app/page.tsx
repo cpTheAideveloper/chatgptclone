@@ -1,95 +1,92 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import ChatMessage from "@/components/ui/ChatMessage";
 import ConfigPanel from "@/components/ui/ConfigPanel";
+import ChatMessage from "@/components/ui/ChatMessage";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import { sendMessage } from "@/utils/apiClient";
 import { Message } from "@/types";
 
-export default function HomePage() {
-  // Definition of states and references
+export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [model, setModel] = useState("gpt-3.5-turbo");
-  const [temperature, setTemperature] = useState(0.7);
   const [loading, setLoading] = useState(false);
+  const [selectedModel, setSelectedModel] = useState("gpt-4o-mini");
+  const [temperature, setTemperature] = useState(0.7);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, loading]);
-
   const handleSend = async () => {
     if (!input.trim()) return;
+
     const userMessage: Message = { role: "user", content: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setLoading(true);
 
     try {
-      const response = await sendMessage({
-        messages: [...messages, userMessage],
-        model,
-        temperature,
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [...messages, userMessage],
+          model: selectedModel,
+          temperature,
+        }),
       });
 
-      if (response.response) {
-        const assistantMessage: Message = {
-          role: "assistant",
-          content: response.response,
-        };
-        setMessages((prev) => [...prev, assistantMessage]);
-      }
+      if (!response.ok) throw new Error("Network response was not ok");
+
+      const data = await response.json();
+      const botMessage: Message = { role: "assistant", content: data.response };
+      setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      const errorMessage: Message = {
-        role: "assistant",
-        content: "There was an error processing your request.",
-      };
-      setMessages((prev) => [...prev, errorMessage]);
+      console.error("Error:", error);
     } finally {
       setLoading(false);
     }
   };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
       handleSend();
     }
   };
-
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
       <div className="w-full max-w-2xl">
         <ConfigPanel
-          model={model}
-          onModelChange={setModel}
+          selectedModel={selectedModel}
           temperature={temperature}
+          onModelChange={setSelectedModel}
           onTemperatureChange={setTemperature}
         />
         <div className="bg-white shadow rounded p-4 h-96 overflow-y-auto">
-          {messages.map((msg, index) => (
-            <ChatMessage key={index} message={msg} />
+          {messages.map((message, index) => (
+            <ChatMessage key={index} message={message} />
           ))}
           {loading && <LoadingSpinner />}
           <div ref={messagesEndRef} />
         </div>
-        <div className="mt-4 flex">
+        <div className="flex mt-4">
           <input
-            type="text"
+            className="flex-1 p-2 border rounded resize-none"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyDown}
             placeholder="Type your message..."
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none"
           />
           <button
+            className="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
             onClick={handleSend}
-            className="px-4 py-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600"
           >
             Send
           </button>
