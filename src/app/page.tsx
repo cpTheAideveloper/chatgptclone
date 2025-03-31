@@ -21,6 +21,19 @@ export default function Home() {
     scrollToBottom();
   }, [messages]);
 
+  // Handle window resize to adapt config panel behavior
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768 && configOpen) {
+        // Close panel when switching to mobile
+        setConfigOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [configOpen]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -76,9 +89,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-gray-100 flex">
       {/* Main chat container */}
-      <div className={`flex-1 flex flex-col h-screen transition-all duration-300 ${configOpen ? "md:mr-0" : ""}`}>
+      <div className={`flex-1 flex flex-col h-screen transition-all duration-300 ease-in-out ${configOpen ? "md:mr-80" : "md:mr-0"}`}>
         {/* Chat header */}
         <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
           <div className="flex items-center">
@@ -135,17 +148,20 @@ export default function Home() {
         />
       </div>
       
-      {/* Config panel - slide in on mobile, fixed on desktop */}
+      {/* Config panel */}
       <div 
-        className={`fixed md:static inset-0 bg-white md:bg-gray-50 z-10 transform transition-transform duration-300 ease-in-out border-l border-gray-200 ${
-          configOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
-        } md:block ${configOpen ? "block" : "hidden"}`}
-      
+        className={`
+          fixed md:absolute inset-y-0 right-0 
+          md:w-80 bg-white md:bg-gray-50 z-20
+          border-l border-gray-200
+          transform transition-transform duration-300 ease-in-out
+          ${configOpen ? "translate-x-0" : "translate-x-full"}
+        `}
       >
         <div className="md:hidden flex items-center p-4 border-b border-gray-200">
           <button 
             className="p-1 rounded-full hover:bg-gray-100 mr-2"
-            onClick={() => setConfigOpen(false)}
+            onClick={toggleConfig}
           >
             <ArrowLeft size={20} />
           </button>
