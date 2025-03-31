@@ -6,14 +6,14 @@ const openai = new OpenAI({
 });
 
 export async function POST(request: Request) {
-  const { messages, model, temperature } = await request.json();
+  const { messages, model, temperature, systemConfigurations } = await request.json();
   try {
     const completion = await openai.chat.completions.create({
       model: model || "gpt-4o-mini",
       messages: [
         {
           role: "system",
-          content: "You are a friendly and helpful assistant.",
+          content: systemConfigurations || "You are a friendly and helpful assistant.",
         },
         ...messages,
       ],

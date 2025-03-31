@@ -1,100 +1,152 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Send, Mic, Paperclip, Smile } from "lucide-react";
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { Settings, Send, Mic, Paperclip, X } from "lucide-react";
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => void;
-  placeholder?: string;
-  disabled?: boolean;
+  onSend: (message: string) => void;
+  onOpenSettings: () => void;
+  disabled: boolean;
 }
 
-export default function ChatInput({
-  onSendMessage,
-  placeholder = "Type your message...",
-  disabled = false
-}: ChatInputProps) {
-  const [input, setInput] = useState("");
+export default function ChatInput({ onSend, onOpenSettings, disabled }: ChatInputProps) {
+  const [message, setMessage] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const [isRecording, setIsRecording] = useState(false);
 
-  // Auto-resize textarea as content grows
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.style.height = "0px";
-      const scrollHeight = inputRef.current.scrollHeight;
-      inputRef.current.style.height = Math.min(scrollHeight, 120) + "px";
-    }
-  }, [input]);
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(e.target.value);
+  };
 
   const handleSend = () => {
-    if (input.trim() && !disabled) {
-      onSendMessage(input.trim());
-      setInput("");
+    if (message.trim()) {
+      onSend(message.trim());
+      setMessage("");
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter") {
       handleSend();
     }
   };
 
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
+  const handleClear = () => {
+    setMessage("");
+    inputRef.current?.focus();
+  };
+
+  const toggleRecording = () => {
+    setIsRecording(!isRecording);
+    // In a real app, this would start/stop voice recording
+  };
+
+  // Focus input on initial load
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   return (
-    <div className={`flex items-end p-2 ${isFocused ? "bg-gray-50" : "bg-white"} border-t border-gray-200 transition-colors duration-200`}>
-      {/* Attachment button */}
-      <button 
-        className="p-2 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors duration-150"
-        aria-label="Add attachment"
+    <div className=" flex flex-col max-w-4xl  mx-auto w-full">
+      {/* Input container with Material Design-inspired elevation */}
+      <div
+        className={`
+          flex items-center border border-black/10 p-3 mx-4   rounded-t-3xl
+          bg-white dark:bg-gray-800
+          shadow-md transition-all duration-200
+          ${isFocused ? "shadow-xl " : ""}
+        `}
       >
-        <Paperclip size={20} />
-      </button>
-      
-      {/* Input area */}
-      <div className={`relative flex-1 mx-2 ${isFocused ? "bg-white" : "bg-gray-100"} rounded-2xl border ${isFocused ? "border-blue-400" : "border-transparent"} transition-colors duration-200`}>
-        <textarea
-          ref={inputRef}
-          className="w-full px-4 py-3 bg-transparent text-gray-900 resize-none overflow-hidden outline-none text-base"
-          rows={1}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          placeholder={placeholder}
-          disabled={disabled}
-        />
-        
-        {/* Emoji button */}
-        <button 
-          className="absolute right-2 bottom-2 p-1 rounded-full text-gray-500 hover:text-gray-700 transition-colors duration-150"
-          aria-label="Add emoji"
+        {/* Attachment button */}
+        <button
+          className="p-2 text-gray-500 hover:text-green-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+          aria-label="Add attachment"
         >
-          <Smile size={20} />
+          <Paperclip size={20} />
         </button>
+
+        {/* Input wrapper */}
+        <div className="relative flex-1 mx-2">
+          <textarea
+            ref={inputRef}
+            className="w-full px-3 py-2 bg-transparent border-none focus:outline-none dark:text-white placeholder-gray-400"
+            placeholder="Type a message..."
+            value={message}
+            onChange={handleChange}
+            onKeyDown={handleKeyPress}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            disabled={disabled}
+          />
+
+          {/* Clear button - only show when text is present */}
+          {message && (
+            <button
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              onClick={handleClear}
+              aria-label="Clear input"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+
+        {/* Action buttons container */}
+        <div className="flex items-center">
+          {/* Voice button */}
+          <button
+            className={`
+              p-2 mr-1 rounded-full transition-colors
+              ${
+                isRecording
+                  ? "text-red-500 bg-red-100 dark:bg-red-900 animate-pulse"
+                  : "text-gray-500 hover:text-green-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+              }
+            `}
+            onClick={toggleRecording}
+            aria-label={isRecording ? "Stop recording" : "Start recording"}
+          >
+            <Mic size={20} />
+          </button>
+
+          {/* Settings button */}
+          <button
+            className="p-2 text-gray-500 hover:text-green-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 mr-1"
+            onClick={onOpenSettings}
+            aria-label="Open settings"
+          >
+            <Settings size={20} />
+          </button>
+
+          {/* Send button - changes appearance based on whether there's a message */}
+          <button
+            className={`
+              p-2 rounded-full transition-all
+              ${
+                message.trim()
+                  ? "bg-green-600 text-white hover:bg-green-700"
+                  : "bg-gray-200 text-gray-400 dark:bg-gray-700 cursor-not-allowed"
+              }
+            `}
+            onClick={handleSend}
+            disabled={!message.trim()}
+            aria-label="Send message"
+          >
+            <Send size={20} />
+          </button>
+        </div>
       </div>
-      
-      {/* Send or mic button */}
-      {input.trim() ? (
-        <button
-          className={`p-3 rounded-full ${
-            disabled
-              ? "bg-blue-300 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
-          } text-white transition-colors duration-150`}
-          onClick={handleSend}
-          disabled={disabled || !input.trim()}
-          aria-label="Send message"
-        >
-          <Send size={18} className="fill-current" />
-        </button>
-      ) : (
-        <button
-          className="p-3 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors duration-150"
-          aria-label="Voice message"
-        >
-          <Mic size={20} />
-        </button>
-      )}
     </div>
   );
 }

@@ -20,7 +20,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       {/* Avatar */}
       <div className={`flex-shrink-0 ${isUser ? "ml-2" : "mr-2"}`}>
         <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
-          isUser ? "bg-blue-500" : "bg-gray-300"
+          isUser ? "bg-green-500" : "bg-gray-300"
         }`}>
           {isUser ? (
             <User size={16} className="text-white" />
@@ -34,7 +34,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
       <div
         className={`relative max-w-xs px-4 py-2 rounded-2xl ${
           isUser 
-            ? "bg-blue-500 text-white rounded-tr-none" 
+            ? "bg-green-500 text-white rounded-tr-none" 
             : "bg-gray-100 text-gray-800 rounded-tl-none border border-gray-200"
         }`}
       >
@@ -43,7 +43,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         {/* Timestamp for user messages */}
         {isUser && (
           <div className="flex items-center justify-end mt-1">
-            <span className="text-xs text-blue-100">
+            <span className="text-xs text-green-100">
               {timestamp.toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit'
